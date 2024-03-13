@@ -3,13 +3,13 @@ on:
   push:
     branches:
       - master
-
-permissions:
-  contents: read
 jobs:
   build:
     name: macos-arm
     runs-on: macos-14
+    permissions:
+      contents: write
+      packages: write
     steps:
       - name: Node
         uses: actions/setup-node@v2
