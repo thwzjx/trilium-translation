@@ -1,0 +1,22 @@
+name: Build macos dmg
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    name: macos-arm
+    runs-on: macos-14
+    steps:
+      - name: Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: yarn install
+      - name: Build ${{ runner.arch }}
+        run: yarn make
