@@ -1,6 +1,9 @@
 name: Build macos dmg
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - master
+
 permissions:
   contents: read
 jobs:
