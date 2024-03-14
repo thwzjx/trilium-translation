@@ -2,7 +2,7 @@ name: Build macos dmg
 on:
   push:
     branches:
-      - master
+      - main
 jobs:
   build:
     name: macos-arm
