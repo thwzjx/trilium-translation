@@ -271,7 +271,8 @@ file_path = 'src/public/app/menus/electron_context_menu.js'
 translation = [
     'title: `{{Add "${params.misspelledWord}" to dictionary}}`',
     'title: `{{Cut}}',
-    'title: `{{Copy}}',
+    'title: `{{Copy link}}`,',
+    'title: `{{Copy}} <kbd>',
     'title: `{{Copy link}}`',
     'title: `{{Paste as plain text}}',
     'title: `{{Paste}}',
@@ -1578,8 +1579,8 @@ translation = [
     "{{JavaScript note which will be injected into the share page. JS note must be in the shared sub-tree as well. Consider using 'shareHiddenFromTree'.}}",
     "{{Favicon note to be set in the shared page. Typically you want to set it to share root and make it inheritable. Favicon note must be in the shared sub-tree as well. Consider using 'shareHiddenFromTree'.}}",
     '{{default title of notes created as children of this note. The value is evaluated as JavaScript string \n                        and thus can be enriched with dynamic content via the injected <code>now</code> and <code>parentNote</code> variables. Examples:}}',
-    "{{<code>\${parentNote.getLabelValue('authorName')}'s literary works</code>}}",
-    "{{<code>Log for \${now.format('YYYY-MM-DD HH:mm:ss')}</code>}}",
+    "{{<code>\\${parentNote.getLabelValue('authorName')}'s literary works</code>}}",
+    "{{<code>Log for \\${now.format('YYYY-MM-DD HH:mm:ss')}</code>}}",
     '{{See <a href="https://github.com/zadam/trilium/wiki/Default-note-title">wiki with details</a>, API docs for <a href="https://zadam.github.io/trilium/backend_api/Note.html">parentNote</a> and <a href="https://day.js.org/docs/en/display/format">now</a> for details.}}',
     "'{{see}} <",
     "{{defines color of the note in note tree, links etc. Use any valid CSS color value like 'red' or #a13d5f}}",
@@ -3275,7 +3276,7 @@ else:
         content = f.read()
     if not 'langCode' in content:
         content = content.replace(
-            'ref: excalidrawRef,', 'ref: excalidrawRef,\n                    langCode: "zh-CN",'
+            'excalidrawAPI: api => { this.excalidrawApi = api; },', 'excalidrawAPI: api => { this.excalidrawApi = api; },\n                    langCode: "zh-CN",'
         )
     with open(file_full_path, 'w') as f:
         f.write(content)
@@ -3286,8 +3287,13 @@ print(f'switch to dir: {BASE_PATH}')
 os.chdir(BASE_PATH)
 # os.system('npm install webpack --save-dev')
 # os.system('npm run webpack')
-os.system('which webpack')
-os.system('webpack -c webpack.config.js')
+
+# nvm managed environment
+if os.path.exists('/usr/share/nvm/init-nvm.sh'):
+    os.system('source /usr/share/nvm/init-nvm.sh && which webpack && webpack -c webpack.config.js')
+else:
+    os.system('which webpack')
+    os.system('webpack -c webpack.config.js')
 
 # 把编译好的文件复制到客户端里
 # copy compiled file to the client
@@ -3329,14 +3335,14 @@ with open(dest_path, 'r') as f:
     # ckeditor 代码块通过中文的 · 触发
     # ckeditor code block trigger by chinese ·
     target_element = '/^```$/'
-    new_element = '/^(```|···)$/'
+    new_element = '/^(```|···|｀｀｀)$/'
     if target_element in content:
         content = content.replace(target_element, new_element)
 
     # ckeditor 引用通过中文的 》 触发
     # ckeditor block quote trigger by chinese 》
-    target_element = '/^>\s$/'
-    new_element = '/^(>|》)\s$/'
+    target_element = '/^>\\s$/'
+    new_element = '/^(>|》)\\s$/'
     if target_element in content:
         content = content.replace(target_element, new_element)
 
